@@ -1,0 +1,72 @@
+<!-- Copyright 2000-2023 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license. -->
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+
+<idea-plugin>
+
+    <!-- Unique id for this plugin. Must stay constant for the life of the plugin. -->
+    <id>com.wibowo.fixtools</id>
+
+    <!-- Text to display as name on Settings | Plugin page -->
+    <name>FIXTools: FIX Protocols Toolset</name>
+
+    <!-- Indicate this plugin can be loaded in all IntelliJ Platform-based products. -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <!-- Text to display as description on Settings | Plugin page -->
+    <description>
+        <![CDATA[
+        Plugin for parsing FIX messages using custom dictionaries. The dictionary file follows the format used by quickfixj.
+        Please see <a href="https://github.com/quickfix-j/quickfixj/blob/master/quickfixj-messages/quickfixj-messages-fix40/src/main/resources/FIX40.xml">this link</a> for an example of the dictionary.<br/>
+
+        To set up:
+        <ol>
+            <li>Go to IntelliJ Settings, then navigate to Tools -> FIX Tools Settings.</li>
+            <li>Add your FIX dictionaries, giving each an alias.</li>
+        </ol>
+
+        <p>
+        To use the <b>FIX tools</b> window, select <b>View | Tool Windows | FIX tools</b>. Alternatively, you can
+        highlight a FIX message text directly from the editor and parse it.
+        </p>
+
+    ]]>
+    </description>
+    <change-notes>
+        <![CDATA[
+      <ul>
+        <li><b>2024.1.5</b> First release of FIXTools plugin.</li>
+      </ul>
+    ]]>
+    </change-notes>
+
+
+    <vendor url="https://github.com/alexwibowo" email="alexwibowo@gmail.com">Alex Wibowo</vendor>
+
+<!--    <product-descriptor code="P12345" release-date="20240930" release-version="20241"/>-->
+    <version>2024.1.5</version>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="FIX tools" secondary="true" icon="AllIcons.Toolwindows.WebToolWindow" anchor="right"
+                    factoryClass="com.wibowo.fixtools.intellij.FixToolWindowFactory"/>
+
+        <applicationConfigurable
+            parentId="tools"
+            instance="com.wibowo.fixtools.intellij.ui.AppSettingsConfigurable"
+            id="com.wibowo.fixtools.intellij.ui.AppSettingsConfigurable"
+            displayName="FIX Tools Settings"/>
+
+
+        <applicationService serviceImplementation="com.wibowo.fixtools.intellij.ui.AppSettings"/>
+    </extensions>
+
+    <actions>
+        <group id="FIXToolsGroup" popup="true" text="FIX Tools">
+            <add-to-group group-id="EditorPopupMenu"/>
+        </group>
+
+        <action class="com.wibowo.fixtools.intellij.actions.ParseSelectedTextAction" text="Parse Text">
+            <add-to-group group-id="FIXToolsGroup"/>
+        </action>
+    </actions>
+
+</idea-plugin>

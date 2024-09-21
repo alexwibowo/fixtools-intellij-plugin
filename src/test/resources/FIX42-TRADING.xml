@@ -1,0 +1,342 @@
+<fix major="4" minor="2">
+    <header>
+        <field name="BeginString" required="Y"/>
+        <field name="BodyLength" required="Y"/>
+        <field name="MsgType" required="Y"/>
+        <field name="SenderCompID" required="Y"/>
+        <field name="TargetCompID" required="Y"/>
+        <field name="MsgSeqNum" required="Y"/>
+        <field name="PossDupFlag" required="N"/>
+        <field name="SendingTime" required="Y"/>
+    </header>
+
+    <trailer>
+        <field name="CheckSum" required="Y"/>
+    </trailer>
+
+    <messages>
+        <message name="Logon" msgtype="A" msgcat="admin">
+            <field name="EncryptMethod" required="N"/>
+            <field name="HeartBtInt" required="Y"/>
+            <field name="ResetSeqNumFlag" required="N"/>
+            <field name="Username" required="N"/>
+            <field name="Password" required="N"/>
+        </message>
+
+        <message name="Logout" msgtype="5" msgcat="admin">
+            <field name="Text" required="N"/>
+        </message>
+
+        <message name="NewOrderMultileg" msgtype="AB" msgcat="app">
+            <field name="ClOrdID" required="Y"/>
+            <field name="ClientID" required="N"/>
+            <field name="VenueID" required="Y"/>
+            <field name="Account" required="N"/>
+            <field name="PriceInitiator" required="N"/>
+            <field name="DealInitiator" required="N"/>
+            <field name="OriginalQuoteSource" required="N"/>
+            <field name="Symbol" required="Y"/>
+            <field name="SecurityType" required="Y"/>
+            <field name="OrdType" required="Y"/>
+            <field name="Currency" required="Y"/>
+            <field name="TransactTime" required="Y"/>
+            <field name="QuoteID" required="Y"/>
+            <field name="RefOrderID" required="Y"/>
+            <field name="RefOrderIDSource" required="Y"/>
+            <field name="SettlCurrency" required="N"/>
+            <field name="FixingReference" required="N"/>
+            <group name="NoLegs" required="Y">
+                <field name="LegPrice" required="Y"/>
+                <field name="LegSettlDate" required="Y"/>
+                <field name="LegSide" required="Y"/>
+                <field name="LegOrderQty" required="Y"/>
+                <field name="LegSpotRate" required="Y"/>
+                <field name="LegForwardPoints" required="Y"/>
+                <field name="LegBasePx" required="N"/>
+                <field name="LegBaseSpotRate" required="N"/>
+                <field name="LegBaseForwardPoints" required="N"/>
+                <field name="LegTermsPx" required="N"/>
+                <field name="LegTermsSpotRate" required="N"/>
+                <field name="LegTermsForwardPoints" required="N"/>
+                <field name="LegHistoricRate" required="N"/>
+                <field name="LegBaseHistoricRate" required="N"/>
+                <field name="LegSpotSalesMargin" required="Y"/>
+                <field name="LegForwardSalesMargin" required="Y"/>
+                <field name="LegNonDeliverableFixingDate" required="N"/>
+                <group name="NoLegAllocs" required="N">
+                    <field name="LegAllocAccount" required="Y"/>
+                    <field name="LegIndividualAllocID" required="N"/>
+                    <field name="LegAllocQty" required="Y"/>
+                    <field name="LegAllocSide" required="Y"/>
+                    <field name="SettlInstrBase" required="N"/>
+                    <field name="SettlInstrTerms" required="N"/>
+                    <field name="Remarks" required="N"/>
+                </group>
+            </group>
+            <field name="OriginalSender" required="N"/>
+            <field name="DealerNotes" required="N"/>
+            <field name="ClientUserName" required="N"/>
+            <field name="MMRateContraCcy" required="N"/>
+            <field name="MMRateUSD" required="N"/>
+            <field name="ContraCcyToAUDPx" required="N"/>
+            <field name="CashflowAmountContra" required="N"/>
+            <field name="IncrementParentRollCount" required="N"/>
+            <field name="CashflowInterestAdjContra" required="N"/>
+        </message>
+    </messages>
+
+    <fields>
+        <field number="1" name="Account" type="STRING"/>
+        <field number="7" name="BeginSeqNo" type="INT"/>
+        <field number="8" name="BeginString" type="STRING"/>
+        <field number="9" name="BodyLength" type="INT"/>
+        <field number="10" name="CheckSum" type="STRING"/>
+        <field number="11" name="ClOrdID" type="STRING"/>
+        <field number="15" name="Currency" type="CURRENCY"/>
+        <field number="16" name="EndSeqNo" type="INT"/>
+        <field number="17" name="ExecID" type="STRING"/>
+        <field number="20" name="ExecTransType" type="CHAR">
+            <value enum="0" description="NEW"/>
+            <value enum="3" description="STATUS"/>
+        </field>
+        <field number="22" name="SecurityIDSource" type="CHAR">
+            <value enum="4" description="ISIN"/>
+        </field>
+        <field number="34" name="MsgSeqNum" type="INT"/>
+        <field number="35" name="MsgType" type="STRING"/>
+        <field number="36" name="NewSeqNo" type="INT"/>
+        <field number="37" name="OrderID" type="STRING"/>
+        <field number="38" name="OrderQty" type="QTY"/>
+        <field number="39" name="OrdStatus" type="CHAR">
+            <value enum="0" description="NEW"/>
+            <value enum="2" description="FILLED"/>
+            <value enum="8" description="REJECTED"/>
+        </field>
+        <field number="40" name="OrdType" type="CHAR">
+            <value enum="D" description="PREVIOUSLY_QUOTED"/>
+        </field>
+        <field number="43" name="PossDupFlag" type="BOOLEAN">
+            <value enum="Y" description="POSSIBLE_DUPLICATE"/>
+            <value enum="N" description="ORIGINAL_TRANSMISSION"/>
+        </field>
+        <field number="45" name="RefSeqNum" type="INT"/>
+        <field number="49" name="SenderCompID" type="STRING"/>
+        <field number="52" name="SendingTime" type="UTCTIMESTAMP"/>
+        <field number="55" name="Symbol" type="STRING"/>
+        <field number="56" name="TargetCompID" type="STRING"/>
+        <field number="58" name="Text" type="STRING"/>
+        <field number="60" name="TransactTime" type="UTCTIMESTAMP"/>
+        <field number="64" name="FutSettDate" type="LOCALMKTDATE"/>
+        <field number="75" name="TradeDate" type="LOCALMKTDATE"/>
+        <field number="97" name="PossResend" type="BOOLEAN"/>
+        <field number="98" name="EncryptMethod" type="INT">
+            <value enum="0" description="NONE_OTHER"/>
+        </field>
+        <field number="103" name="OrderRejectionReason" type="INT">
+            <value enum="0" description="BROKER_EXCHANGE_OPTION"/>
+            <value enum="1" description="UNKNOWN_SYMBOL"/>
+            <value enum="2" description="EXCHANGE_CLOSED"/>
+            <value enum="3" description="ORDER_EXCEEDS_LIMIT"/>
+            <value enum="4" description="TOO_LATE_TO_ENTER"/>
+            <value enum="5" description="UNKNOWN_ORDER"/>
+            <value enum="6" description="DUPLICATE_ORDER"/>
+            <value enum="7" description="DUPLICATE_VERBAL_ORDER"/>
+            <value enum="8" description="STALE_ORDER"/>
+            <value enum="9" description="TRADE_ALONG_REQUIRED"/>
+            <value enum="10" description="INVALID_INVESTOR_ID"/>
+            <value enum="11" description="UNSUPPORTED_ORDER_CHARACTERISTIC"/>
+            <value enum="12" description="SURVEILLENCE_OPTION"/>
+            <value enum="13" description="INCORRECT_QUANTITY"/>
+            <value enum="14" description="INCORRECT_ALLOCATED_QUANTITY"/>
+            <value enum="15" description="UNKNOWN_ACCOUNT"/>
+            <value enum="18" description="INVALID_PRICE_INCREMENT"/>
+            <value enum="99" description="OTHER"/>
+        </field>
+        <field number="108" name="HeartBtInt" type="INT"/>
+        <field number="109" name="ClientID" type="STRING"/>
+        <field number="112" name="TestReqID" type="STRING"/>
+        <field number="117" name="QuoteID" type="STRING"/>
+        <field number="120" name="SettlCurrency" type="CURRENCY"/>
+        <field number="122" name="OrigSendingTime" type="UTCTIMESTAMP"/>
+        <field number="123" name="GapFillFlag" type="BOOLEAN">
+            <value enum="Y" description="GAP_FILL_MESSAGE_MSGSEQNUM_FIELD_VALID"/>
+            <value enum="N" description="SEQUENCE_RESET_IGNORE_MSGSEQNUM"/>
+        </field>
+        <field number="127" name="DKReason" type="CHAR">
+            <value enum="A" description="UNKNOWN_SYMBOL"/>
+            <value enum="B" description="WRONG_SIDE"/>
+            <value enum="C" description="QUANTITY_EXCEEDS_ORDER"/>
+            <value enum="D" description="NO_MATCHING_ORDER"/>
+            <value enum="E" description="PRICE_EXCEEDS_LIMIT"/>
+            <value enum="F" description="CALCULATION_DIFFERENCE"/>
+            <value enum="Z" description="OTHER"/>
+        </field>
+        <field number="131" name="QuoteReqID" type="STRING"/>
+        <field number="141" name="ResetSeqNumFlag" type="BOOLEAN">
+            <value enum="Y" description="YES_RESET_SEQUENCE_NUMBERS"/>
+            <value enum="N" description="NO"/>
+        </field>
+        <field number="146" name="NoRelatedSym" type="INT"/>
+        <field number="150" name="ExecType" type="CHAR">
+            <value enum="0" description="NEW"/>
+            <value enum="2" description="FILL"/>
+            <value enum="8" description="REJECTED"/>
+        </field>
+        <field number="167" name="SecurityType" type="STRING">
+            <value enum="FXSPOT" description="FX_SPOT"/>
+            <value enum="FXFWD" description="FX_FORWARD"/>
+            <value enum="FXSWAP" description="FX_SWAP"/>
+            <value enum="FXML" description="FX_MULTILEG"/>
+            <value enum="FXNDF" description="FX_NON_DELIVERABLE_FORWARD"/>
+            <value enum="FXNDFLS" description="FX_NON_DELIVERABLE_FORWARD_LIQUIDITY_SWAP"/>
+            <value enum="FXNDFML" description="FX_NON_DELIVERABLE_FORWARD_MULTILEG"/>
+            <value enum="HR_EXT" description="HR_EXT"/>
+            <value enum="HR_ETU" description="HR_ETU"/>
+            <value enum="MR_EXT" description="MR_EXT"/>
+            <value enum="MR_ETU" description="MR_ETU"/>
+        </field>
+        <field number="297" name="QuoteStatus" type="INT">
+            <value enum="0" description="ACCEPTED"/>
+            <value enum="5" description="REJECTED"/>
+            <value enum="7" description="EXPIRED"/>
+            <value enum="17" description="CANCELLED"/>
+            <value enum="22" description="TRADED_AND_REMOVED"/>
+            <value enum="25" description="DECLINED"/>
+            <value enum="30" description="ACCEPTED_BY_DI"/>
+        </field>
+        <field number="298" name="QuoteCancelType" type="INT">
+            <value enum="4" description="CANCEL_ALL_QUOTES"/>
+        </field>
+        <field number="300" name="QuoteRejectReason" type="STRING">
+            <value enum="1" description="UNKNOWN_SYMBOL"/>
+            <value enum="3" description="QUOTE_REQUEST_EXCEEDS_LIMIT"/>
+            <value enum="17" description="INSUFFICIENT_CREDIT_LIMIT"/>
+            <value enum="19" description="EXCEEDED_MAXIMUM_NOTIONAL_ORDER_AMOUNT"/>
+            <value enum="99" description="OTHER"/>
+        </field>
+        <field number="354" name="EncodedTextLen" type="INT"/>
+        <field number="355" name="EncodedText" type="DATA"/>
+        <field number="369" name="LastMsgSeqNumProcessed" type="INT"/>
+        <field number="370" name="OnBehalfOfSendingTime" type="UTCTIMESTAMP"/>
+        <field number="371" name="RefTagID" type="INT"/>
+        <field number="372" name="RefMsgType" type="STRING"/>
+        <field number="373" name="SessionRejectReason" type="INT">
+            <value enum="0" description="INVALID_TAG_NUMBER"/>
+            <value enum="1" description="REQUIRED_TAG_MISSING"/>
+            <value enum="2" description="TAG_NOT_DEFINED_FOR_THIS_MESSAGE_TYPE"/>
+            <value enum="3" description="UNDEFINED_TAG"/>
+            <value enum="4" description="TAG_SPECIFIED_WITHOUT_A_VALUE"/>
+            <value enum="5" description="VALUE_IS_INCORRECT"/>
+            <value enum="6" description="INCORRECT_DATA_FORMAT_FOR_VALUE"/>
+            <value enum="7" description="DECRYPTION_PROBLEM"/>
+            <value enum="8" description="SIGNATURE_PROBLEM"/>
+            <value enum="9" description="COMPID_PROBLEM"/>
+            <value enum="10" description="SENDINGTIME_ACCURACY_PROBLEM"/>
+            <value enum="11" description="E"/>
+        </field>
+        <field number="379" name="BusinessRejectRefID" type="STRING"/>
+        <field number="380" name="BusinessRejectReason" type="STRING">
+            <value enum="0" description="OTHER"/>
+            <value enum="1" description="UNKOWN_ID"/>
+            <value enum="2" description="UNKNOWN_SECURITY"/>
+            <value enum="3" description="UNSUPPORTED_MESSAGE_TYPE"/>
+            <value enum="4" description="APPLICATION_NOT_AVAILABLE"/>
+            <value enum="5" description="CONDITIONALLY_REQUIRED_FIELD_MISSING"/>
+        </field>
+        <field number="437" name="LegContraQty" type="QTY"/>
+        <field number="553" name="Username" type="STRING"/>
+        <field number="554" name="Password" type="STRING"/>
+        <field number="555" name="NoLegs" type="NUMINGROUP"/>
+        <field number="566" name="LegPrice" type="PRICE"/>
+        <field number="588" name="LegSettlDate" type="STRING"/>
+        <field number="624" name="LegSide" type="CHAR">
+            <value enum="1" description="BUY"/>
+            <value enum="2" description="SELL"/>
+        </field>
+        <field number="637" name="LegLastPx" type="PRICE"/>
+        <field number="670" name="NoLegAllocs" type="NUMINGROUP"/>
+        <field number="671" name="LegAllocAccount" type="STRING"/>
+        <field number="672" name="LegIndividualAllocID" type="STRING"/>
+        <field number="673" name="LegAllocQty" type="QTY"/>
+        <field number="681" name="LegBidPx" type="PRICE"/>
+        <field number="684" name="LegOfferPx" type="PRICE"/>
+        <field number="685" name="LegOrderQty" type="QTY"/>
+        <field number="694" name="QuoteRespType" type="INT">
+            <value enum="4" description="COVER"/>
+            <value enum="5" description="DONE_AWAY"/>
+            <value enum="6" description="PASS"/>
+            <value enum="9" description="TIED"/>
+            <value enum="10" description="TIED_COVER"/>
+            <value enum="12" description="DECLINE"/>
+        </field>
+        <field number="1036" name="ExecAckStatus" type="INT">
+            <value enum="1" description="Accepted"/>
+            <value enum="2" description="Dont know or Rejected"/>
+        </field>
+        <field number="1067" name="LegBidForwardPoints" type="PRICEOFFSET"/>
+        <field number="1068" name="LegOfferForwardPoints" type="PRICEOFFSET"/>
+        <field number="1080" name="RefOrderID" type="STRING"/>
+        <field number="1081" name="RefOrderIDSource" type="CHAR">
+            <value enum="6" description="QuoteReqID"/>
+        </field>
+        <field number="1418" name="LegLastQty" type="QTY"/>
+        <field number="6702" name="InCompete" type="CHAR">
+            <value enum="Y" description="Yes"/>
+            <value enum="N" description="No"/>
+        </field>
+        <field number="6703" name="CompetitorCount" type="INT"/>
+        <field number="7075" name="FixingReference" type="STRING"/>
+        <!-- custom fields -->
+        <field number="20054" name="LegAllocSide" type="CHAR">
+            <value enum="B" description="AS_DEFINED"/>
+            <value enum="C" description="OPPOSITE"/>
+        </field>
+        <field number="20064" name="ReferenceSpotDate" type="LOCALMKTDATE"/>
+        <field number="20188" name="LegBidSpotRate" type="PRICE"/>
+        <field number="20190" name="LegOfferSpotRate" type="PRICE"/>
+        <field number="20192" name="LegSpotRate" type="PRICE"/>
+        <field number="20193" name="LegForwardPoints" type="PRICEOFFSET"/>
+        <field number="20194" name="LegLastSpotRate" type="PRICE"/>
+        <field number="20195" name="LegLastForwardPoints" type="PRICEOFFSET"/>
+        <!-- In the case where a message was routed to a different recipient, this tag indicates the original sender -->
+        <field number="34001" name="VenueID" type="STRING"/>
+        <field number="34004" name="OriginalSender" type="STRING"/>
+        <field number="34005" name="OriginalQuoteSource" type="STRING"/>
+        <field number="34006" name="CreditStatus" type="STRING"/>
+        <field number="34007" name="CreditStatusErrorReason" type="STRING"/>
+        <field number="34008" name="DealerNotes" type="STRING"/>
+        <field number="34009" name="Remarks" type="STRING"/>
+        <field number="34010" name="ClientUserName" type="STRING"/>
+        <field number="34012" name="HRRPolicyFailureReason" type="STRING">
+            <value enum="ELIGIBLE_SOLE" description="CAD approval needed"/>
+            <value enum="ELIGIBLE_DEALER_DISCRETION" description="Dealer discretion"/>
+            <value enum="ELIGIBLE_DUAL" description="Joint pre approval by CAD holders"/>
+            <value enum="IN_ELIGIBLE_DUAL" description="Ineligible dual"/>
+        </field>
+        <field number="40368" name="LegNonDeliverableFixingDate" type="LOCALMKTDATE"/>
+        <field number="80013" name="LegHistoricRate" type="PRICE"/>
+        <field number="80014" name="LegBaseHistoricRate" type="PRICE"/>
+        <field number="80020" name="ContraCcyToAUDPx" type="PRICE"/>
+        <field number="80021" name="CashflowAmountContra" type="QTY"/>
+        <field number="80024" name="IncrementParentRollCount" type="INT">
+            <value enum="0" description="DO_NOT_INCREMENT_ROLL_COUNT"/>
+            <value enum="1" description="INCREMENT_PARENT_ROLL_COUNT"/>
+        </field>
+        <field number="80025" name="CashflowInterestAdjContra" type="QTY"/>
+        <field number="80029" name="MMRateContraCcy" type="PRICE"/>
+        <field number="80030" name="MMRateUSD" type="PRICE"/>
+        <field number="80035" name="ParentRollCount" type="INT"/>
+        <field number="90023" name="DealInitiator" type="STRING"/>
+        <field number="90028" name="LegSpotSalesMargin" type="PRICEOFFSET"/>
+        <field number="90029" name="LegForwardSalesMargin" type="PRICEOFFSET"/>
+        <field number="90030" name="SettlInstrBase" type="STRING"/>
+        <field number="90031" name="SettlInstrTerms" type="STRING"/>
+        <field number="90032" name="LegBasePx" type="PRICEOFFSET"/>
+        <field number="90033" name="LegBaseSpotRate" type="PRICEOFFSET"/>
+        <field number="90034" name="LegBaseForwardPoints" type="PRICEOFFSET"/>
+        <field number="90035" name="LegTermsPx" type="PRICEOFFSET"/>
+        <field number="90036" name="LegTermsSpotRate" type="PRICEOFFSET"/>
+        <field number="90037" name="LegTermsForwardPoints" type="PRICEOFFSET"/>
+        <field number="90038" name="PriceInitiator" type="STRING"/>
+    </fields>
+</fix>
