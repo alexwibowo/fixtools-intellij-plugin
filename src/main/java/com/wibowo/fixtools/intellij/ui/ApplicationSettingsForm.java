@@ -94,7 +94,7 @@ public class ApplicationSettingsForm {
             });
             registerDictionaryDialog.pack();
             registerDictionaryDialog.setLocationRelativeTo(addButton);
-            registerDictionaryDialog.show();
+            registerDictionaryDialog.setVisible(true);
         }
     }
 

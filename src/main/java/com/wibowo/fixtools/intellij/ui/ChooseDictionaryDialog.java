@@ -6,6 +6,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import com.wibowo.fixtools.intellij.FIXToolsException;
 import com.wibowo.fixtools.intellij.model.ApplicationModel;
 import com.wibowo.fixtools.intellij.model.Dictionary;
+import quickfix.DataDictionary;
 import quickfix.FieldNotFound;
 
 import javax.swing.*;
@@ -18,7 +19,7 @@ public class ChooseDictionaryDialog extends JDialog {
     private JPanel contentPane;
     private JButton okButton;
     private JButton cancelButton;
-    private JComboBox dictionaryComboBox;
+    private JComboBox<String> dictionaryComboBox;
 
     public ChooseDictionaryDialog() {
         setContentPane(contentPane);
@@ -46,26 +47,21 @@ public class ChooseDictionaryDialog extends JDialog {
         });
 
         // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(e -> onCancel(),
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+        );
 
         final Set<String> dictionaryAliases = AppSettings.getInstance().getState().getDictionaryAliases();
-        final DefaultComboBoxModel model = new DefaultComboBoxModel(dictionaryAliases.toArray());
+        final ComboBoxModel<String> model = new DefaultComboBoxModel<>(dictionaryAliases.toArray(new String[0]));
         dictionaryComboBox.setModel(model);
         this.setResizable(false);
     }
 
     private void onOK() {
         final String selectedDictionaryAlias = dictionaryComboBox.getSelectedItem().toString();
-        final Dictionary selectedDictionary = AppSettings.getInstance().getState().getDictionaryByAlias(selectedDictionaryAlias);
-        final File file = new File(selectedDictionary.path);
-        if (!file.exists()) {
-            // TODO: handle
-        }
-        ApplicationModel.getInstance().setDataDictionary(file);
+        final DataDictionary selectedDictionary = AppSettings.getInstance().getState().getDictionaryByAlias(selectedDictionaryAlias);
+        ApplicationModel.getInstance().setDataDictionary(selectedDictionary);
         try {
             ApplicationModel.getInstance().processMessage();
         } catch (FieldNotFound e) {
@@ -77,13 +73,6 @@ public class ChooseDictionaryDialog extends JDialog {
     private void onCancel() {
         // add your code here if necessary
         dispose();
-    }
-
-    public static void main(String[] args) {
-        ChooseDictionaryDialog dialog = new ChooseDictionaryDialog();
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
     }
 
     {

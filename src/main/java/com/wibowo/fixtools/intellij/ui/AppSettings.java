@@ -8,7 +8,11 @@ import com.wibowo.fixtools.intellij.FIXToolsException;
 import com.wibowo.fixtools.intellij.model.Dictionary;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import quickfix.ConfigError;
+import quickfix.DataDictionary;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -67,14 +71,41 @@ public class AppSettings implements PersistentStateComponent<AppSettings.State> 
             final Set<String> dictionaryAliases = dictionaries.stream()
                     .map(dictionary -> dictionary.alias)
                     .collect(Collectors.toSet());
+            dictionaryAliases.add("FIX40");
+            dictionaryAliases.add("FIX41");
+            dictionaryAliases.add("FIX42");
+            dictionaryAliases.add("FIX43");
+            dictionaryAliases.add("FIX44");
+            dictionaryAliases.add("FIX50");
             return dictionaryAliases;
         }
 
-        public Dictionary getDictionaryByAlias(final String alias) {
-            return dictionaries.stream()
-                    .filter(dictionary -> dictionary.alias.equals(alias))
-                    .findFirst()
-                    .orElseThrow(() -> new FIXToolsException("Unknown alias: " + alias));
+        public DataDictionary getDictionaryByAlias(final String alias) {
+            switch(alias) {
+                case "FIX40":
+                case "FIX41":
+                case "FIX42":
+                case "FIX43":
+                case "FIX44":
+                case "FIX50":
+                    try {
+                        return new DataDictionary(DictionaryTableModel.class.getClassLoader().getResourceAsStream(alias +".xml"));
+                    } catch (final ConfigError e) {
+                        throw new FIXToolsException("Unable to load dictionary", e);
+                    }
+                default:
+                    Dictionary customDictionary = dictionaries.stream()
+                            .filter(dictionary -> dictionary.alias.equals(alias))
+                            .findFirst()
+                            .orElseThrow(() -> new FIXToolsException("Unknown alias: " + alias));
+                    try (final FileInputStream in = new FileInputStream(customDictionary.path)){
+                        return new DataDictionary(in);
+                    } catch (final IOException | ConfigError e) {
+                        throw new FIXToolsException("Invalid data dictionary file provided", e);
+                    }
+            }
+
+
         }
     }
 

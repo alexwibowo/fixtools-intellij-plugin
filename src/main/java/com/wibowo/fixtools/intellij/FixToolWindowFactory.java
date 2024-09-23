@@ -1,6 +1,5 @@
 package com.wibowo.fixtools.intellij;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.actionSystem.ex.ComboBoxAction;
 import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl;
@@ -14,14 +13,13 @@ import com.intellij.ui.content.ContentManager;
 import com.wibowo.fixtools.intellij.actions.ClearAction;
 import com.wibowo.fixtools.intellij.actions.ParseMessageAction;
 import com.wibowo.fixtools.intellij.model.ApplicationModel;
-import com.wibowo.fixtools.intellij.model.Dictionary;
 import com.wibowo.fixtools.intellij.ui.AppSettings;
 import com.wibowo.fixtools.intellij.ui.FixParserContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import quickfix.DataDictionary;
 
 import javax.swing.*;
-import java.io.File;
 import java.util.Set;
 
 public class FixToolWindowFactory implements ToolWindowFactory, DumbAware {
@@ -44,15 +42,11 @@ public class FixToolWindowFactory implements ToolWindowFactory, DumbAware {
         final ComboBoxAction chooseDictionaryAction = new ComboBoxAction() {
             private String selectedDictionaryAlias = null;
             @Override
-            protected @NotNull DefaultActionGroup createPopupActionGroup(JComponent button) {
+            protected @NotNull DefaultActionGroup createPopupActionGroup(@NotNull final JComponent button,
+                                                                         @NotNull final DataContext dataContext) {
                 final Set<String> dictionaryAliases = AppSettings.getInstance().getState().getDictionaryAliases();
-                DefaultActionGroup group = new DefaultActionGroup();
-                // Add some actions to the combo box
-
-                for (String dictionaryAlias : dictionaryAliases) {
-                    group.add(new DictionaryOption(dictionaryAlias));
-                }
-
+                final DefaultActionGroup group = new DefaultActionGroup();
+                dictionaryAliases.stream().map(DictionaryOption::new).forEach(group::add);
                 return group;
             }
 
@@ -73,12 +67,12 @@ public class FixToolWindowFactory implements ToolWindowFactory, DumbAware {
                     }
                 } else {
                     presentation.setText(selectedDictionaryAlias);
-                    final Dictionary selectedDictionary = AppSettings.getInstance().getState().getDictionaryByAlias(selectedDictionaryAlias);
-                    final File file = new File(selectedDictionary.path);
-                    if (!file.exists()) {
-                        // TODO: handle
-                    }
-                    ApplicationModel.getInstance().setDataDictionary(file);
+                    final DataDictionary selectedDictionary = AppSettings.getInstance().getState().getDictionaryByAlias(selectedDictionaryAlias);
+//                    final File file = new File(selectedDictionary.path);
+//                    if (!file.exists()) {
+//                         TODO: handle
+//                    }
+                    ApplicationModel.getInstance().setDataDictionary(selectedDictionary);
                 }
             }
 

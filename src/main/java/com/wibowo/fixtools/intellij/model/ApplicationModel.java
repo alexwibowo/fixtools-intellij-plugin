@@ -1,10 +1,8 @@
 package com.wibowo.fixtools.intellij.model;
 
 import com.jgoodies.common.base.Strings;
-import com.wibowo.fixtools.intellij.FIXToolsException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import quickfix.ConfigError;
 import quickfix.DataDictionary;
 import quickfix.FieldNotFound;
 import quickfix.Message;
@@ -12,9 +10,6 @@ import quickfix.Message;
 import javax.swing.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Objects;
 
 public final class ApplicationModel {
@@ -43,12 +38,8 @@ public final class ApplicationModel {
     private ApplicationModel() {
     }
 
-    public void setDataDictionary(final File file) {
-        try (final FileInputStream in = new FileInputStream(file)){
-            this.dataDictionary = new DataDictionary(in);
-        } catch (final IOException | ConfigError e) {
-            throw new FIXToolsException("Invalid data dictionary file provided", e);
-        }
+    public void setDataDictionary(final @NotNull DataDictionary file) {
+        this.dataDictionary = file;
     }
 
     public ApplicationModel setFixMessage(final String fixMessage) {

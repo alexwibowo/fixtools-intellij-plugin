@@ -53,7 +53,11 @@ public final class MessageTree {
         while (bodyIterator.hasNext()) {
             final Field<?> bodyField = bodyIterator.next();
             final String fieldName = dictionary.getFieldName(bodyField.getTag());
-            result.put(fieldName, parseField(object, bodyField));
+            if (fieldName != null) {
+                result.put(fieldName, parseField(object, bodyField));
+            } else {
+                result.put("" + bodyField.getTag(), parseField(object, bodyField));
+            }
         }
         return result;
     }
