@@ -6,7 +6,7 @@ plugins {
 }
 
 group = projectGroup
-version = '1.6'
+version = '1.8'
 
 repositories {
     mavenCentral()
@@ -36,6 +36,15 @@ dependencies {
     testImplementation 'org.junit.vintage:junit-vintage-engine'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation("org.assertj:assertj-core:3.12.2")
+}
+
+patchPluginXml {
+    sinceBuild.set("242")
+
+    // setting with null provider effectively remove the 'until-build' attribute, which makes the plugin to
+    // be open-ended. See https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-tasks.html#patchPluginXml-sinceBuild
+    untilBuild.set( provider { null } )
+
 }
 
 publishPlugin {

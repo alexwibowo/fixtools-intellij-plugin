@@ -34,20 +34,16 @@
     <change-notes>
         <![CDATA[
       <ul>
-        <li><b>2024.1.7</b> Updating with version compatibility number.</li>
-        <li><b>2024.1.6</b> Minor fixes - removing unused icons, calls to deprecated methods.</li>
-        <li><b>2024.1.5</b> First release of FIXTools plugin.</li>
+        <li><b>1.8</b> Updating with version compatibility number.</li>
+        <li><b>1.7</b> Updating with version compatibility number.</li>
+        <li><b>1.6</b> Minor fixes - removing unused icons, calls to deprecated methods.</li>
+        <li><b>1.5</b> First release of FIXTools plugin.</li>
       </ul>
     ]]>
     </change-notes>
 
 
     <vendor url="https://github.com/alexwibowo" email="alexwibowo@gmail.com">Alex Wibowo</vendor>
-
-<!--    <product-descriptor code="P12345" release-date="20240930" release-version="20241"/>-->
-    <version>2024.1.7</version>
-    
-    <idea-version since-build="242"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="FIX tools" secondary="true" icon="AllIcons.Toolwindows.WebToolWindow" anchor="right"
