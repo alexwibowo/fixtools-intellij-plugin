@@ -57,6 +57,14 @@ public final class ApplicationModel {
         return dataDictionary != null && fixMessage != null && !Strings.isEmpty(fixMessage);
     }
 
+    /**
+     * Reset:
+     * <ul>
+     *     <li>{@link #dataDictionary}</li>
+     *     <li>{@link #messageTree}</li>
+     *     <li>{@link #fixMessage}</li>
+     * </ul>
+     */
     public void clear() {
         this.dataDictionary = null;
 
@@ -64,9 +72,7 @@ public final class ApplicationModel {
         this.messageTree = null;
         changes.firePropertyChange(PROPERTY_MESSAGE_TREE, oldMessageTree, this.messageTree);
 
-        final String oldFixMessage = this.fixMessage;
         setFixMessage(null);
-        changes.firePropertyChange(PROPERTY_FIX_MESSAGE, oldFixMessage, this.fixMessage);
     }
 
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
