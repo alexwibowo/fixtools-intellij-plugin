@@ -27,6 +27,11 @@
         <p>
         To use the <b>FIX tools</b> window, select <b>View | Tool Windows | FIX tools</b>. Alternatively, you can
         highlight a FIX message text directly from the editor and parse it.
+        Note the message to be parsed must use one of these delimiters:
+        <ol>
+            <li>Control A  (^A)</li>
+            <li>Pipe (|) </li>
+        </ol>
         </p>
 
     ]]>
@@ -34,6 +39,7 @@
     <change-notes>
         <![CDATA[
       <ul>
+        <li><b>1.9</b> Translate enumerated raw value</li>
         <li><b>1.8</b> Updating with version compatibility number.</li>
         <li><b>1.7</b> Updating with version compatibility number.</li>
         <li><b>1.6</b> Minor fixes - removing unused icons, calls to deprecated methods.</li>
