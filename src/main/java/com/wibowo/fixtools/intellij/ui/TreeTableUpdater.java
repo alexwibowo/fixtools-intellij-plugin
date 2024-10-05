@@ -2,10 +2,10 @@ package com.wibowo.fixtools.intellij.ui;
 
 import com.intellij.ui.components.JBTreeTable;
 import com.intellij.ui.treeStructure.treetable.ListTreeTableModel;
-import com.intellij.ui.treeStructure.treetable.TreeTableModel;
 import com.intellij.util.ui.ColumnInfo;
-import com.wibowo.fixtools.intellij.model.MessageTree;
 import com.wibowo.fixtools.intellij.model.ApplicationModel;
+import com.wibowo.fixtools.intellij.model.MessageTree;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.beans.PropertyChangeEvent;
@@ -39,11 +39,9 @@ public final class TreeTableUpdater implements PropertyChangeListener {
             if (messageTree != null) {
                 final Map<String, Object> headerValues = messageTree.getHeaderValues();
                 for (final Map.Entry<String, Object> headerEntry : headerValues.entrySet()) {
-                    final DefaultMutableTreeNode node = new FixNode(headerEntry.getKey(), headerEntry.getValue());
-                    root.add(node);
+                    root.add(FixNode.createHeaderNode(headerEntry.getKey(), headerEntry.getValue()));
                 }
-                final DefaultMutableTreeNode body = buildBody("Body", messageTree.getBodyValues());
-                root.add(body);
+                root.add(buildBody("Body", messageTree.getBodyValues()));
             }
             final ListTreeTableModel listTreeTableModel = new ListTreeTableModel(root, columns) {
                 @Override
@@ -56,19 +54,20 @@ public final class TreeTableUpdater implements PropertyChangeListener {
         }
     }
 
-    private DefaultMutableTreeNode buildBody(final String parentName,
-                                             final Map<String, Object> collection) {
-        final DefaultMutableTreeNode result = new FixNode(parentName, "");
-        for (final Map.Entry<String, Object> entry : collection.entrySet()) {
-            if (entry.getValue() instanceof String) {
-                final DefaultMutableTreeNode node = new FixNode(entry.getKey(), entry.getValue());
-                result.add(node);
-            } else if (entry.getValue() instanceof java.util.List<?>) {
-                final java.util.List listValue = (java.util.List) entry.getValue();
+    private FixNode buildBody(final String parentName,
+                              final Map<String, Pair<Object, String>> tagKeyValue) {
+        final FixNode result = FixNode.createBaseContainer(parentName);
+        for (final Map.Entry<String, Pair<Object, String>> entry : tagKeyValue.entrySet()) {
+            final Pair<Object, String> tagValue = entry.getValue();
+            final Object tagRawValue = tagValue.getLeft();
+            if (tagRawValue instanceof String) {
+                // for simple key value (e.g. MessageType)
+                result.add(FixNode.from(entry.getKey(), tagValue));
+            } else if (tagRawValue instanceof java.util.List listValue) {
+                // for collection, e.g. leg
                 for (int i = 0; i < listValue.size(); i++) {
-                    Map<String, Object> o = (Map<String, Object>) listValue.get(i);
-                    DefaultMutableTreeNode defaultMutableTreeNode = buildBody(entry.getKey() + "-" + i, o);
-                    result.add(defaultMutableTreeNode);
+                    final Map<String, Pair<Object, String>> o = (Map<String, Pair<Object, String>>) listValue.get(i);
+                    result.add(buildBody(entry.getKey() + "-" + i, o));
                 }
             }
         }

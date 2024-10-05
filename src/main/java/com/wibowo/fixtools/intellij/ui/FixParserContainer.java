@@ -1,5 +1,6 @@
 package com.wibowo.fixtools.intellij.ui;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.JBColor;
@@ -35,8 +36,9 @@ public class FixParserContainer {
 
     public FixParserContainer() {
         final ColumnInfo<FixNode, String> name = new FixNodeColumnInfo<>("Tag", FixNode::getTagName);
-        final ColumnInfo<FixNode, Object> value = new FixNodeColumnInfo<>("Raw Value", FixNode::getRawTagValue);
-        final ColumnInfo[] columns = {name, value};
+        final ColumnInfo<FixNode, Object> rawValue = new FixNodeColumnInfo<>("Raw Value", FixNode::getRawTagValue);
+        final ColumnInfo<FixNode, Object> convertedValue = new FixNodeColumnInfo<>("Value", fixNode -> fixNode.getTagValue());
+        final ColumnInfo[] columns = {name, rawValue, convertedValue};
 
         final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
         final JBTreeTable treeTable = createTreeTable(root, columns);

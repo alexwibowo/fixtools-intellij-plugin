@@ -6,14 +6,14 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.wibowo.fixtools.intellij.FIXToolsException;
 import com.wibowo.fixtools.intellij.model.Dictionary;
+import com.wibowo.fixtools.intellij.model.QuickfixJUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import quickfix.ConfigError;
 import quickfix.DataDictionary;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -80,7 +80,7 @@ public class AppSettings implements PersistentStateComponent<AppSettings.State> 
             return dictionaryAliases;
         }
 
-        public DataDictionary getDictionaryByAlias(final String alias) {
+        public Optional<DataDictionary> getDictionaryByAlias(final String alias) {
             switch(alias) {
                 case "FIX40":
                 case "FIX41":
@@ -89,20 +89,15 @@ public class AppSettings implements PersistentStateComponent<AppSettings.State> 
                 case "FIX44":
                 case "FIX50":
                     try {
-                        return new DataDictionary(DictionaryTableModel.class.getClassLoader().getResourceAsStream(alias +".xml"));
+                        return Optional.of(new DataDictionary(DictionaryTableModel.class.getClassLoader().getResourceAsStream(alias + ".xml")));
                     } catch (final ConfigError e) {
                         throw new FIXToolsException("Unable to load dictionary", e);
                     }
                 default:
-                    Dictionary customDictionary = dictionaries.stream()
+                    return dictionaries.stream()
                             .filter(dictionary -> dictionary.alias.equals(alias))
                             .findFirst()
-                            .orElseThrow(() -> new FIXToolsException("Unknown alias: " + alias));
-                    try (final FileInputStream in = new FileInputStream(customDictionary.path)){
-                        return new DataDictionary(in);
-                    } catch (final IOException | ConfigError e) {
-                        throw new FIXToolsException("Invalid data dictionary file provided", e);
-                    }
+                            .map(QuickfixJUtils.FIX_DICTIONARY_CONVERTER);
             }
 
 

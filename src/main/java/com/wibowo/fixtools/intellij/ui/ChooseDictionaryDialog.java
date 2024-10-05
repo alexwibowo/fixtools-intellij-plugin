@@ -13,6 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.Optional;
 import java.util.Set;
 
 public class ChooseDictionaryDialog extends JDialog {
@@ -60,13 +61,17 @@ public class ChooseDictionaryDialog extends JDialog {
 
     private void onOK() {
         final String selectedDictionaryAlias = dictionaryComboBox.getSelectedItem().toString();
-        final DataDictionary selectedDictionary = AppSettings.getInstance().getState().getDictionaryByAlias(selectedDictionaryAlias);
-        ApplicationModel.getInstance().setDataDictionary(selectedDictionary);
-        try {
-            ApplicationModel.getInstance().processMessage();
-        } catch (FieldNotFound e) {
-            throw new FIXToolsException("Failed to parse message", e);
-        }
+        final Optional<DataDictionary> selectedDictionary = AppSettings.getInstance().getState().getDictionaryByAlias(selectedDictionaryAlias);
+        selectedDictionary.ifPresent(dictionary -> {
+            ApplicationModel.getInstance().setDataDictionary(dictionary);
+            try {
+                ApplicationModel.getInstance().processMessage();
+            } catch (FieldNotFound e) {
+                throw new FIXToolsException("Failed to parse message", e);
+            }
+        });
+
+
         dispose();
     }
 

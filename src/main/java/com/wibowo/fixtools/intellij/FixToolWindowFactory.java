@@ -20,7 +20,9 @@ import org.jetbrains.annotations.Nullable;
 import quickfix.DataDictionary;
 
 import javax.swing.*;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class FixToolWindowFactory implements ToolWindowFactory, DumbAware {
 
@@ -67,12 +69,17 @@ public class FixToolWindowFactory implements ToolWindowFactory, DumbAware {
                     }
                 } else {
                     presentation.setText(selectedDictionaryAlias);
-                    final DataDictionary selectedDictionary = AppSettings.getInstance().getState().getDictionaryByAlias(selectedDictionaryAlias);
+                    final Optional<DataDictionary> selectedDictionary = AppSettings.getInstance().getState().getDictionaryByAlias(selectedDictionaryAlias);
 //                    final File file = new File(selectedDictionary.path);
 //                    if (!file.exists()) {
 //                         TODO: handle
 //                    }
-                    ApplicationModel.getInstance().setDataDictionary(selectedDictionary);
+                    selectedDictionary.ifPresent(new Consumer<DataDictionary>() {
+                        @Override
+                        public void accept(DataDictionary dataDictionary) {
+                            ApplicationModel.getInstance().setDataDictionary(dataDictionary);
+                        }
+                    });
                 }
             }
 

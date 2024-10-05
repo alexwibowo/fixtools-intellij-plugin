@@ -1,11 +1,8 @@
 package com.wibowo.fixtools.intellij.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
+import org.apache.commons.lang3.tuple.Pair;
 import quickfix.DataDictionary;
 import quickfix.Field;
 import quickfix.FieldMap;
@@ -17,7 +14,7 @@ public final class MessageTree {
 
     private final Map<String, Object> headerValues;
 
-    private final Map<String, Object> bodyValues;
+    private final Map<String, Pair<Object, String>> bodyValues;
 
     private final DataDictionary dictionary;
 
@@ -42,21 +39,25 @@ public final class MessageTree {
         return headerValues;
     }
 
-    public Map<String, Object> getBodyValues() {
+    public Map<String, Pair<Object, String>> getBodyValues() {
         return bodyValues;
     }
 
-    private Map<String, Object> simpleParse(final FieldMap object)
+    private Map<String, Pair<Object, String>> simpleParse(final FieldMap object)
             throws FieldNotFound {
-        final Map<String, Object> result = new TreeMap<>();
+        final Map<String, Pair<Object, String>> result = new TreeMap<>();
         final Iterator<Field<?>> bodyIterator = object.iterator();
         while (bodyIterator.hasNext()) {
             final Field<?> bodyField = bodyIterator.next();
             final String fieldName = dictionary.getFieldName(bodyField.getTag());
             if (fieldName != null) {
-                result.put(fieldName, parseField(object, bodyField));
+                String valueName = dictionary.getValueName(bodyField.getTag(), (String) bodyField.getObject());
+                Pair<Object, String> value = Pair.of(parseField(object, bodyField), valueName);
+                result.put(fieldName, value);
             } else {
-                result.put("" + bodyField.getTag(), parseField(object, bodyField));
+                // for unknown tag..
+                Pair<Object, String> value = Pair.of(parseField(object, bodyField), null);
+                result.put("" + bodyField.getTag(), value);
             }
         }
         return result;
@@ -67,7 +68,7 @@ public final class MessageTree {
         final int tag = field.getTag();
         final Object object = field.getObject();
         if (parent.hasGroup(tag)) {
-            final List<Map<String, Object>> children = new ArrayList<>();
+            final List<Map<String, Pair<Object, String>>> children = new ArrayList<>();
             // yep... 1 based index.
             for (int i = 1; i <= parent.getGroupCount(tag); i++) {
                 final Group group = parent.getGroup(i, tag);
